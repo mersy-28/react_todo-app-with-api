@@ -7,7 +7,11 @@ type Props = {
   loading?: boolean;
   disableActions?: boolean;
   onToggle: (todo: Todo) => void;
-  onRename: (todo: Todo, title: string) => void;
+  onRename: (
+    todo: Todo,
+    title: string,
+    done?: (success: boolean) => void,
+  ) => void;
   onDelete: (todo: Todo) => void;
 };
 
@@ -54,8 +58,12 @@ export const TodoItem: React.FC<Props> = ({
   };
 
   const submitEdit = () => {
-    setIsEditing(false);
-    onRename(todo, title);
+    onRename(todo, title, (success: boolean) => {
+      if (success) {
+        setIsEditing(false);
+      }
+      // If failed, keep edit form open
+    });
   };
 
   const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {

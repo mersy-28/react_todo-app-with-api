@@ -8,7 +8,11 @@ type Props = {
   deletingIds: Set<number>;
   updatingIds: Set<number>;
   onToggle: (todo: Todo) => void;
-  onRename: (todo: Todo, title: string) => void;
+  onRename: (
+    todo: Todo,
+    title: string,
+    done?: (success: boolean) => void,
+  ) => void;
   onDelete: (todo: Todo) => void;
 };
 

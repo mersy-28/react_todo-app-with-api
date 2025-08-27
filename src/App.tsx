@@ -228,35 +228,59 @@ export const App: React.FC = () => {
   };
 
   // RENAME
-  const handleRename = async (todo: Todo, newTitleRaw: string) => {
+  const handleRename = async (
+    todo: Todo,
+    newTitleRaw: string,
+    done?: (success: boolean) => void,
+  ) => {
     setError(null); // Hide error immediately on new request
     const updatedTitle = newTitleRaw.trim();
 
     // unchanged → cancel
     if (updatedTitle === todo.title.trim()) {
+      if (done) {
+        done(true);
+      }
+
       return;
     }
 
     // empty → delete
     if (!updatedTitle) {
-      await handleDelete(todo);
+      const deleteSuccess = await handleDelete(todo);
+
+      if (done) {
+        done(deleteSuccess);
+      }
 
       return;
     }
 
     if (todo.id === 0) {
+      if (done) {
+        done(true);
+      }
+
       return;
     }
 
     setUpdatingIds(prev => new Set(prev).add(todo.id));
+    // Force React to flush state so loader appears before API call
+    await new Promise(resolve => setTimeout(resolve, 0));
     try {
       const updated = await updateTodo(USER_ID, todo.id, {
         title: updatedTitle,
       });
 
       setTodos(prev => prev.map(t => (t.id === todo.id ? updated : t)));
+      if (done) {
+        done(true);
+      }
     } catch {
       showErrorMsg('Unable to update a todo');
+      if (done) {
+        done(false);
+      }
     } finally {
       setUpdatingIds(prev => {
         const next = new Set(prev);
@@ -326,7 +350,7 @@ export const App: React.FC = () => {
 
       <div className="todoapp__content">
         <header className="todoapp__header">
-          {!isLoading && (
+          {!isLoading && todos.length > 0 && (
             <button
               type="button"
               aria-label="Toggle all"
