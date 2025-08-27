@@ -12,10 +12,12 @@
   transition: opacity 0.2s ease, visibility 0.2s ease;
   z-index: 30;
 }
+
 .notification.hidden {
   opacity: 0;
   visibility: hidden;
 }
+
 .notification .notification__close {
   position: absolute;
   right: 8px;
@@ -26,6 +28,7 @@
   background: none;
   cursor: pointer;
 }
+
 .notification .notification__close::before, .notification .notification__close::after {
   content: "";
   position: absolute;
@@ -35,9 +38,11 @@
   height: 16px;
   background: currentColor;
 }
+
 .notification .notification__close::before {
   transform: rotate(45deg);
 }
+
 .notification .notification__close::after {
   transform: rotate(-45deg);
 }/*# sourceMappingURL=notification.css.map */
