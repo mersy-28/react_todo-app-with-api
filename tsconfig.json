@@ -4,7 +4,12 @@
     "src"
   ],
   "compilerOptions": {
-    "sourceMap": false,
-    "types": ["node", "cypress"]
+    "target": "ES2017",
+    "downlevelIteration": true,
+    "lib": ["ES2017", "DOM"],
+    "strict": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Node"
   }
 }
