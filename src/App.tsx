@@ -1,3 +1,4 @@
+// File: src/App.tsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import cn from 'classnames';
 import {

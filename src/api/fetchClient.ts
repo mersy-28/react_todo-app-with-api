@@ -1,3 +1,4 @@
+// File: src/api/fetchClient.ts
 const BASE_URL = 'https://mate.academy/students-api';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';

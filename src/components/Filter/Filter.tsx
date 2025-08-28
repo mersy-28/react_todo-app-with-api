@@ -1,4 +1,4 @@
-// src/components/Filter/Filter.tsx
+// File: src/components/Filter/Filter.tsx
 import React from 'react';
 import cn from 'classnames';
 

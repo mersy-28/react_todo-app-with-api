@@ -1,3 +1,4 @@
+// File: src/components/UserWarning.tsx
 import React from 'react';
 import cn from 'classnames';
 

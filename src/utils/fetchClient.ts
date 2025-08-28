@@ -1,3 +1,4 @@
+// File: src/utils/fetchClient.ts
 const BASE_URL = 'https://mate.academy/students-api';
 
 const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
