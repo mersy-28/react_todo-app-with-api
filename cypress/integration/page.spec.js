@@ -1749,21 +1749,6 @@ describe('', () => {
         });
 
         it('should cancel if title was not changed', () => {
-          const spy = cy.stub().callsFake(req => req.reply({ body: { ...req.body, id: 257334 } })).as('renameCallback');
-          page.mockUpdate(257334, spy);
-
-          todos.title(0).trigger('dblclick');
-          todos.titleField(0).should('exist').then($input => {
-            $input[0].focus();
-            $input[0].blur();
-          });
-          cy.get('@renameCallback').should('not.be.called');
-          page.flushJSTimers();
-          todos.titleField(0).should('not.exist');
-          todos.assertTitle(0, 'HTML');
-        });
-
-        it('should cancel if title was not changed', () => {
           const spy = cy.stub()
             .callsFake(req => req.reply({ body: { ...req.body, id: 257334 } }))
             .as('renameCallback');
@@ -1771,7 +1756,10 @@ describe('', () => {
           page.mockUpdate(257334, spy);
 
           todos.title(0).trigger('dblclick');
-          todos.titleField(0).blur();
+          // Ensure the input is focused before blur
+          todos.titleField(0).should('be.focused').then($input => {
+            cy.wrap($input).blur();
+          });
 
           cy.get('@renameCallback').should('not.be.called');
           page.flushJSTimers();

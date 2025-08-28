@@ -14,6 +14,7 @@ type Props = {
     done?: (success: boolean) => void,
   ) => void;
   onDelete: (todo: Todo) => void;
+  setIsEditing?: (editing: boolean) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -23,26 +24,26 @@ export const TodoItem: React.FC<Props> = ({
   onToggle,
   onRename,
   onDelete,
+  setIsEditing,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [localIsEditing, setLocalIsEditing] = useState(false);
   const [title, setTitle] = useState(todo.title);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const showControls = useMemo(() => !isEditing, [isEditing]);
+  const editRef = useRef<HTMLInputElement>(null);
+  const showControls = useMemo(() => !localIsEditing, [localIsEditing]);
 
   useEffect(() => {
     setTitle(todo.title);
   }, [todo.title]);
 
   useEffect(() => {
-    if (isEditing) {
-      // wait a tick for input to mount
+    if (localIsEditing) {
       setTimeout(() => {
-        inputRef.current?.focus();
-        inputRef.current?.select();
+        editRef.current?.focus();
+        editRef.current?.select();
       }, 0);
     }
-  }, [isEditing]);
+  }, [localIsEditing]);
 
   const startEdit = () => {
     if (loading || disableActions || todo.id === 0) {
@@ -50,26 +51,52 @@ export const TodoItem: React.FC<Props> = ({
     }
 
     setTitle(todo.title);
-    setIsEditing(true);
+    setLocalIsEditing(true);
+    if (typeof setIsEditing === 'function') {
+      setIsEditing(true);
+    }
   };
 
   const cancelEdit = () => {
-    setIsEditing(false);
+    setLocalIsEditing(false);
     setTitle(todo.title);
+    if (typeof setIsEditing === 'function') {
+      setIsEditing(false);
+    }
   };
 
-  const submitEdit = () => {
-    onRename(todo, title, (success: boolean) => {
-      if (success) {
+  const handleBlur = () => {
+    const trimmedTitle = title.trim();
+
+    if (trimmedTitle === '') {
+      // If title is empty, delete the todo
+      // Only close the form if delete succeeds (simulate async)
+      onDelete(todo);
+      // Do not close the form here; let parent close on success
+      // If you want to handle async, you can pass a callback to onDelete
+    } else if (trimmedTitle !== todo.title) {
+      // If title changed, save
+      onRename(todo, trimmedTitle, (success: boolean) => {
+        if (success) {
+          setLocalIsEditing(false);
+          if (typeof setIsEditing === 'function') {
+            setIsEditing(false);
+          }
+        }
+        // If failed, keep edit form open
+      });
+    } else {
+      // If unchanged, cancel
+      setLocalIsEditing(false);
+      if (typeof setIsEditing === 'function') {
         setIsEditing(false);
       }
-      // If failed, keep edit form open
-    });
+    }
   };
 
   const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      submitEdit();
+      handleBlur();
     } else if (e.key === 'Escape') {
       cancelEdit();
     }
@@ -113,13 +140,13 @@ export const TodoItem: React.FC<Props> = ({
       ) : (
         <form onSubmit={e => e.preventDefault()}>
           <input
-            ref={inputRef}
+            ref={editRef}
             className="todo__title-field"
             data-cy="TodoTitleField"
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
-            onBlur={submitEdit}
+            onBlur={handleBlur}
             onKeyUp={onKeyUp}
             disabled={loading}
           />

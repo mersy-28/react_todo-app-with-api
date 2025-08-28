@@ -33,6 +33,8 @@ export const App: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const errorTimerRef = useRef<number | null>(null);
 
+  const [isEditing, setIsEditing] = useState(false);
+
   const showErrorMsg = (msg: string) => {
     setError(msg);
     if (errorTimerRef.current) {
@@ -367,6 +369,7 @@ export const App: React.FC = () => {
             onChange={setNewTitle}
             onCreate={handleCreate}
             inputRef={inputRef}
+            isEditing={isEditing}
           />
         </header>
 
@@ -379,6 +382,8 @@ export const App: React.FC = () => {
             onToggle={handleToggle}
             onRename={handleRename}
             onDelete={handleDelete}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
           />
         </section>
 

@@ -7,6 +7,7 @@ type Props = {
   onChange: (v: string) => void;
   onCreate: (v: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
+  isEditing?: boolean;
 };
 
 export const NewTodo: React.FC<Props> = ({
@@ -15,12 +16,14 @@ export const NewTodo: React.FC<Props> = ({
   onChange,
   onCreate,
   inputRef,
+  isEditing,
 }) => {
+  // Only focus NewTodo if not editing (parent should pass isEditing if needed)
   useEffect(() => {
-    if (!disabled) {
+    if (!disabled && !isEditing) {
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [disabled, inputRef]);
+  }, [disabled, isEditing, inputRef]);
 
   // Synchronous disable on Enter keydown (before submit fires)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

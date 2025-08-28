@@ -15,6 +15,8 @@ type Props = {
     done?: (success: boolean) => void,
   ) => void;
   onDelete: (todo: Todo) => void;
+  isEditing: boolean;
+  setIsEditing: (editing: boolean) => void;
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -25,6 +27,7 @@ export const TodoList: React.FC<Props> = ({
   onToggle,
   onRename,
   onDelete,
+  setIsEditing,
 }) => {
   return (
     <ul className="todoapp__list" data-cy="TodoList">
@@ -37,6 +40,7 @@ export const TodoList: React.FC<Props> = ({
           onToggle={onToggle}
           onRename={onRename}
           onDelete={onDelete}
+          setIsEditing={setIsEditing}
         />
       ))}
 
@@ -49,6 +53,7 @@ export const TodoList: React.FC<Props> = ({
           onToggle={() => {}}
           onRename={() => {}}
           onDelete={() => {}}
+          setIsEditing={setIsEditing}
         />
       )}
     </ul>
